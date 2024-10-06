@@ -1,0 +1,118 @@
+Huffman Compression
+A simple Huffman compression program implemented in C++.
+
+Overview
+Huffman compression uses Huffman coding, an optimal coding technique, to minimize the size of a file by encoding its contents based on character frequencies. It constructs a binary tree where more frequent characters are assigned shorter codes, effectively reducing the overall storage requirements.
+
+Example
+Consider a string containing the following data: "AAABBCAAADDFFAAAADCCCDAADDDAAACGAAACACA"
+
+Character Frequency Analysis
+mathematica
+Copy code
+Character    Frequency
+    A            20
+    B             2
+    C             7
+    D             7
+    F             2
+    G             1
+Building the Huffman Tree
+The Huffman coding tree is constructed iteratively, starting with the characters having the lowest frequencies:
+
+Pass 1:
+
+scss
+Copy code
+(A, 20) (C, 7) (D, 7) (B, 2) (F, 2) (G, 1)
+=> (A, 20) (C, 7) (D, 7) (**3) (B, 2)
+     / \
+   (F, 2) (G, 1)
+Pass 2:
+
+scss
+Copy code
+(A, 20) (C, 7) (D, 7) (**3) (B, 2)
+=> (A, 20) (C, 7) (D, 7) (**5)
+     / \
+   (**3) (B, 2)
+     / \
+   (F, 2) (G, 1)
+Pass 3:
+
+scss
+Copy code
+(A, 20) (C, 7) (D, 7) (**5)
+=> (A, 20) (C, 7) (**12)
+     / \
+   (D, 7) (**5)
+     / \
+   (**3) (B, 2)
+     / \
+   (F, 2) (G, 1)
+Pass 4:
+
+scss
+Copy code
+(A, 20) (**12) (C, 7)
+=> (A, 20) (**19)
+     / \
+   (**12) (C, 7)
+     / \
+   (D, 7) (**5)
+     / \
+   (**3) (B, 2)
+     / \
+   (F, 2) (G, 1)
+Final Pass (Assigning Codes): Assign binary codes to characters:
+
+Left branch: 0, Right branch: 1
+scss
+Copy code
+(**, 39)
+   / \
+  0   1
+(A, 20) (**19)
+        / \
+       0   1
+    (**12) (C, 7) => [11]
+       / \
+      0   1
+    (D, 7) (**5)
+           / \
+          0   1
+       (**3) (B, 2) => [1011]
+          / \
+         0   1
+      (F, 2) (G, 1) => [10100] and [10101]
+Huffman Codes
+css
+Copy code
+Character    Frequency    Huffman Code    Original Binary
+    A            20             0           01000001
+    B             2          1011           01000010
+    C             7            11           01000011
+    D             7           100           01000100
+    F             2         10100           01000110
+    G             1         10101           01000111
+The total compressed size is 75 bits, while the original size was 312 bits.
+
+The compressed data is stored in binary format, e.g., 0001011101100010010010100101000000100111111100001001001000001110101000110110*00000*, with padding added to round off the bits when saving to a file.
+
+Running the Program
+To compile and run the program:
+
+sh
+Copy code
+g++ huffman-compression.cpp
+[a.exe | ./a.out] -c|-dc [filename_to_be_compressed]
+The -c flag is used for compression, and the -dc flag is for decompression.
+The compressed output will be saved with the .abiz extension.
+Note:
+
+Compressing non-ASCII text files such as .mp3, .mp4, .pdf, or .doc files may result in little or no reduction in file size. This algorithm works best for plain text data.
+
+
+
+
+
